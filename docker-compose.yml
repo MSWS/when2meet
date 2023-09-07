@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  when2meet:
+    container_name: when2meet
+    build: .
+    ports:
+      - "8080:3000"
+    environment:
+      MONGO_PROD_URI: "mongodb://root:${MONGO_PASSWORD}@mongo:27017"
+      MONGO_DB_URI: "mongodb://root:${MONGO_PASSWORD}@mongo:27017"
+    networks:
+      - nginx_public
+      - when2meet
+  mongo:
+    container_name: w2m-mongo
+    image: mongo:4.4.6
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    networks:
+      - when2meet
+    volumes:
+      - mongodata:/data/db
+
+networks:
+  monolith_default:
+    external: true
+  when2meet:
+
+volumes:
+  mongodata:
